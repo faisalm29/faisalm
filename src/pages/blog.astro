@@ -1,0 +1,15 @@
+---
+import { getCollection } from "astro:content";
+
+const allGeneralPosts = await getCollection("generalPost");
+const allProgrammingPosts = await getCollection("programmingPost");
+---
+
+<h1>
+  <ul>
+    {allGeneralPosts.map((post) => <li>{post.data.title}</li>)}
+  </ul>
+  <ul>
+    {allProgrammingPosts.map((post) => <li>{post.data.title}</li>)}
+  </ul>
+</h1>
