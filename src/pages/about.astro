@@ -1,0 +1,28 @@
+---
+import { getTopTracks } from "@/lib/spotify";
+import {
+  Profile,
+  Contacts,
+  TopTracks,
+  BlogStacks,
+} from "@/components/sections";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { PageContainer } from "@/components/containers";
+
+const topTracks = await getTopTracks();
+---
+
+<BaseLayout>
+  <PageContainer>
+    <div>
+      <h1>About</h1>
+      <p class="text-muted-foreground">
+        About me, this blog, and anything related.
+      </p>
+    </div>
+    <Profile />
+    <Contacts />
+    <TopTracks topTracks={topTracks} />
+    <BlogStacks />
+  </PageContainer>
+</BaseLayout>

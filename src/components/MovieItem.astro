@@ -1,0 +1,48 @@
+---
+import { Image } from "astro:assets";
+import { getYear } from "@/lib/utils";
+import type { Movie } from "@/lib/tmdb.types";
+
+interface Props {
+  movie: Movie;
+}
+
+const { movie } = Astro.props;
+const { movie_local_data, movie_details } = movie;
+const { title, poster_path, release_date } = movie_details;
+const {
+  id,
+  data: { category },
+} = movie_local_data;
+---
+
+<a
+  href={`/${category}/${id}`}
+  aria-label={title}
+  title={title}
+  class="border-border hover:bg-accent/50 block rounded-md border p-3 transition-all duration-300 ease-in-out"
+>
+  <div class="flex flex-col space-y-3">
+    <div class="overflow-hidden rounded-md">
+      <Image
+        src={`https://image.tmdb.org/t/p/w500${poster_path}`}
+        alt={`${title}'s movie poster`}
+        sizes="100vw"
+        style={{
+          width: "100%",
+          height: "auto",
+        }}
+        width={500}
+        height={750}
+      />
+    </div>
+    <div>
+      <h3 class="line-clamp-1 text-sm font-medium">
+        {title}
+      </h3>
+      <time datetime={release_date} class="text-muted-foreground text-sm">
+        {getYear(release_date)}
+      </time>
+    </div>
+  </div>
+</a>

@@ -35,7 +35,7 @@ const movieReviewPost = defineCollection({
   }),
   schema: z.object({
     category: z.string(),
-    id: z.string(),
+    tmdbId: z.string(),
     publishedAt: z.string(),
     draft: z.boolean().default(false),
   }),

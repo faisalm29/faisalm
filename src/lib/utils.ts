@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-// import { Movie } from "./tmdb.types";
+import type { Movie } from "./tmdb.types";
 
 type WithPublishedAt = {
   data: {
@@ -49,13 +49,13 @@ export const sortLatestPosts = <T extends LatestPostWithPublishedAt>(
   );
 };
 
-// export const sortMovies = (movies: Movie[]) => {
-//   return [...movies].sort(
-//     (a, b) =>
-//       new Date(b.movie_local_data.publishedAt).valueOf() -
-//       new Date(a.movie_local_data.publishedAt).valueOf(),
-//   );
-// };
+export const sortMovies = (movies: Movie[]) => {
+  return [...movies].sort(
+    (a, b) =>
+      new Date(b.movie_local_data.data.publishedAt).valueOf() -
+      new Date(a.movie_local_data.data.publishedAt).valueOf(),
+  );
+};
 
 export const convertMsToMinutes = (ms: number) => {
   const minutes = Math.floor(ms / 60_000);

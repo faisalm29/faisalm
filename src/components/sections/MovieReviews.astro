@@ -1,0 +1,33 @@
+---
+import { SectionContainer } from "@/components/containers";
+import MovieItem from "@/components/MovieItem.astro";
+import { ViewMoreMoviesButton } from "@/components/ViewMoreMoviesButton";
+import type { Movie } from "@/lib/tmdb.types";
+
+interface Props {
+  movies: Movie[];
+  viewMoreButton?: boolean;
+}
+
+const { movies, viewMoreButton } = Astro.props;
+---
+
+<SectionContainer>
+  <h1>Movie Reviews</h1>
+  <ul class="grid grid-cols-2 gap-3 md:grid-cols-3">
+    {
+      movies.map((movie) => (
+        <li>
+          <MovieItem movie={movie} />
+        </li>
+      ))
+    }
+    {
+      viewMoreButton && (
+        <li>
+          <ViewMoreMoviesButton href="/movies" />
+        </li>
+      )
+    }
+  </ul>
+</SectionContainer>

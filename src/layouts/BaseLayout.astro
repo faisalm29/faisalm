@@ -12,6 +12,7 @@ import { Header } from "@/components/sections/Header";
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
     <title>Astro Basics</title>
+    <!-- <ClientRouter /> -->
   </head>
   <body>
     <div class="relative min-h-screen w-full">
@@ -19,17 +20,10 @@ import { Header } from "@/components/sections/Header";
         class="relative z-10 container mx-auto flex min-h-screen max-w-[60ch] flex-col gap-12 px-6 py-12 sm:py-24"
       >
         <Header client:load />
-        <slot />
+        <main>
+          <slot />
+        </main>
       </div>
     </div>
   </body>
 </html>
-
-<style>
-  html,
-  body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-  }
-</style>

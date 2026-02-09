@@ -1,9 +1,14 @@
 ---
 import { getCollection } from "astro:content";
 import { PageContainer } from "@/components/containers";
-import { GeneralPosts, ProgrammingPosts } from "@/components/sections";
-import { sortPosts } from "@/lib/utils";
+import {
+  GeneralPosts,
+  ProgrammingPosts,
+  MovieReviews,
+} from "@/components/sections";
+import { sortPosts, sortMovies } from "@/lib/utils";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getMovies } from "@/lib/tmdb";
 
 const sortedGeneralPosts = sortPosts(await getCollection("generalPost")).slice(
   0,
@@ -12,6 +17,10 @@ const sortedGeneralPosts = sortPosts(await getCollection("generalPost")).slice(
 const sortedProgrammingPosts = sortPosts(
   await getCollection("programmingPost"),
 ).slice(0, 5);
+const movieIds = (await getCollection("movieReviewPost")).map(
+  (movie) => movie.data.tmdbId,
+);
+const movies = sortMovies(await getMovies(movieIds)).slice(0, 5);
 ---
 
 <BaseLayout>
@@ -22,5 +31,6 @@ const sortedProgrammingPosts = sortPosts(
       programmingPosts={sortedProgrammingPosts}
       viewMoreButton
     />
+    <MovieReviews movies={movies} viewMoreButton />
   </PageContainer>
 </BaseLayout>

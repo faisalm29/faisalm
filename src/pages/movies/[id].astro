@@ -1,0 +1,99 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getCollection, render } from "astro:content";
+import { getMovieById } from "@/lib/tmdb";
+import { Image } from "astro:assets";
+import { formatDate, getYear } from "@/lib/utils";
+import { Calendar } from "@lucide/astro";
+
+export const getStaticPaths = async () => {
+  const movieReviewPosts = await getCollection("movieReviewPost");
+  return movieReviewPosts.map((post) => ({
+    params: { id: post.id },
+    props: { tmdbId: post.data.tmdbId },
+  }));
+};
+
+const { tmdbId } = Astro.props;
+
+const movie = await getMovieById(tmdbId);
+const { movie_local_data, movie_details, movie_credits } = movie;
+
+const directors = movie_credits.crew
+  .filter((crew) => crew.job === "Director")
+  .map((crew) => crew.name);
+const casts = movie_credits.cast.slice(0, 5).map((cast) => cast.name);
+const genres = movie_details.genres.map((genre) => genre.name);
+
+const { Content } = await render(movie_local_data);
+---
+
+<BaseLayout>
+  <article class="flex flex-col space-y-6">
+    <div class="flex flex-col space-y-8">
+      <div class="border-border bg-accent/50 rounded-md border p-4">
+        <div class="flex flex-col space-y-8">
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {
+              movie_details.poster_path && (
+                <Image
+                  src={`https://image.tmdb.org/t/p/w500${movie_details.poster_path}`}
+                  alt={`${movie_details.title}'s movie poster`}
+                  sizes="100vw"
+                  width={250}
+                  height={500}
+                  class="mx-0 h-auto w-full rounded-md"
+                />
+              )
+            }
+            <div class="flex flex-col space-y-4">
+              <div>
+                <p class="font-medium">Director(s)</p>
+                <p class="text-muted-foreground">
+                  {directors.join(", ")}
+                </p>
+              </div>
+              <div>
+                <p class="font-medium">Casts</p>
+                <p class="text-muted-foreground">{casts.join(", ")}</p>
+              </div>
+              <div>
+                <p class="font-medium">Release year</p>
+                <time
+                  datetime={movie_details.release_date}
+                  class="text-muted-foreground"
+                >
+                  {getYear(movie_details.release_date)}
+                </time>
+              </div>
+              <div>
+                <p class="font-medium">Genre</p>
+                <p class="text-muted-foreground">{genres.join(", ")}</p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <p class="font-medium">Overview</p>
+            <p class="text-muted-foreground">{movie_details.overview}</p>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <Calendar size={16} class="text-muted-foreground" />
+        <time
+          datetime={movie_local_data.data.publishedAt}
+          class="text-muted-foreground text-sm"
+        >
+          {formatDate(movie_local_data.data.publishedAt)}
+        </time>
+      </div>
+
+      <h1 class="text-2xl font-medium">{movie_details.title}</h1>
+    </div>
+    <div
+      class="prose text-muted-foreground dark:prose-invert max-w-full leading-relaxed text-pretty"
+    >
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

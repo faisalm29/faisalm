@@ -7,12 +7,11 @@ import { sortPosts } from "@/lib/utils";
 
 const sortedProgrammingPosts = sortPosts(
   await getCollection("programmingPost"),
-).slice(0, 5);
+);
 ---
 
 <BaseLayout>
   <PageContainer>
-    <h1>General</h1>
     <ProgrammingPosts programmingPosts={sortedProgrammingPosts} />
   </PageContainer>
 </BaseLayout>
