@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { Header } from "@/components/sections/Header";
 ---
 
 <!doctype html>
@@ -13,7 +14,14 @@ import "../styles/global.css";
     <title>Astro Basics</title>
   </head>
   <body>
-    <slot />
+    <div class="relative min-h-screen w-full">
+      <div
+        class="relative z-10 container mx-auto flex min-h-screen max-w-[60ch] flex-col gap-12 px-6 py-12 sm:py-24"
+      >
+        <Header client:load />
+        <slot />
+      </div>
+    </div>
   </body>
 </html>
 

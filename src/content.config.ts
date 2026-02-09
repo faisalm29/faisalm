@@ -1,41 +1,37 @@
-import { defineCollection } from "astro:content";
+import { defineCollection, type ImageFunction } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
-const postSchema = z.object({
-  title: z.string(),
-  excerpt: z.string(),
-  category: z.string(),
-  publishedAt: z.string(),
-  thumbnail: z
-    .object({
-      src: z.string(),
-      alt: z.string(),
-    })
-    .optional(),
-  draft: z.boolean().default(false),
-});
+const basePostSchema = ({ image }: { image: ImageFunction }) =>
+  z.object({
+    title: z.string(),
+    excerpt: z.string(),
+    category: z.string(),
+    publishedAt: z.string(),
+    thumbnail: image().optional(),
+    draft: z.boolean().default(false),
+  });
 
 const generalPost = defineCollection({
   loader: glob({
-    pattern: "general/*.{md,mdx}",
-    base: "./src/data/blog",
+    pattern: "**/index.{md,mdx}",
+    base: "./src/data/blog/general",
   }),
-  schema: postSchema,
+  schema: basePostSchema,
 });
 
 const programmingPost = defineCollection({
   loader: glob({
-    pattern: "programming/*.{md,mdx}",
-    base: "./src/data/blog",
+    pattern: "**/index.{md,mdx}",
+    base: "./src/data/blog/programming",
   }),
-  schema: postSchema,
+  schema: basePostSchema,
 });
 
 const movieReviewPost = defineCollection({
   loader: glob({
-    pattern: "movies/*.{md,mdx}",
-    base: "./src/data/blog",
+    pattern: "**/index.{md,mdx}",
+    base: "./src/data/blog/movies",
   }),
   schema: z.object({
     category: z.string(),

@@ -1,11 +1,32 @@
 ---
-import Welcome from "../components/Welcome.astro";
-import Layout from "../layouts/Layout.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { Summary, LatestPosts } from "@/components/sections";
+import { sortLatestPosts } from "@/lib/utils";
+import { getCollection } from "astro:content";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const generalPosts = (await getCollection("generalPost")).map((post) => ({
+  id: post.id,
+  title: post.data.title,
+  category: post.data.category,
+  publishedAt: post.data.publishedAt,
+}));
+
+const programmingPosts = (await getCollection("programmingPost")).map(
+  (post) => ({
+    id: post.id,
+    title: post.data.title,
+    category: post.data.category,
+    publishedAt: post.data.publishedAt,
+  }),
+);
+
+const sortedLatestPosts = sortLatestPosts([
+  ...generalPosts,
+  ...programmingPosts,
+]).slice(0, 10);
 ---
 
-<Layout>
-  <Welcome />
-</Layout>
+<BaseLayout>
+  <Summary />
+  <LatestPosts latesPost={sortedLatestPosts} viewMoreButton />
+</BaseLayout>

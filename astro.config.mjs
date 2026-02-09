@@ -8,6 +8,8 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import { remarkReadingTime } from "./remark-reading-time.mjs";
 import expressiveCode from "astro-expressive-code";
 
+import react from "@astrojs/react";
+
 // https://astro.build/config
 export default defineConfig({
   vite: {
@@ -18,6 +20,7 @@ export default defineConfig({
       themes: ["github-dark", "github-light"],
     }),
     mdx(),
+    react(),
   ],
   markdown: {
     remarkPlugins: [remarkGfm, remarkReadingTime],

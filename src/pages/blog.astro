@@ -1,15 +1,26 @@
 ---
 import { getCollection } from "astro:content";
+import { PageContainer } from "@/components/containers";
+import { GeneralPosts, ProgrammingPosts } from "@/components/sections";
+import { sortPosts } from "@/lib/utils";
+import BaseLayout from "@/layouts/BaseLayout.astro";
 
-const allGeneralPosts = await getCollection("generalPost");
-const allProgrammingPosts = await getCollection("programmingPost");
+const sortedGeneralPosts = sortPosts(await getCollection("generalPost")).slice(
+  0,
+  5,
+);
+const sortedProgrammingPosts = sortPosts(
+  await getCollection("programmingPost"),
+).slice(0, 5);
 ---
 
-<h1>
-  <ul>
-    {allGeneralPosts.map((post) => <li>{post.data.title}</li>)}
-  </ul>
-  <ul>
-    {allProgrammingPosts.map((post) => <li>{post.data.title}</li>)}
-  </ul>
-</h1>
+<BaseLayout>
+  <PageContainer>
+    <h1>Blog</h1>
+    <GeneralPosts generalPosts={sortedGeneralPosts} viewMorebutton />
+    <ProgrammingPosts
+      programmingPosts={sortedProgrammingPosts}
+      viewMoreButton
+    />
+  </PageContainer>
+</BaseLayout>
