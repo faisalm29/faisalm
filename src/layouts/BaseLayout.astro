@@ -25,6 +25,15 @@ const ogImageURL = new URL(
 <html lang="en" transition:name="root" transition:animate="none">
   <head>
     <ClientRouter />
+    {
+      import.meta.env.PROD && (
+        <script
+          defer
+          src="https://cloud.umami.is/script.js"
+          data-website-id="77334038-94b4-4c62-8b82-45a85059dd82"
+        />
+      )
+    }
     <script is:inline>
       const setTheme = () => {
         const theme = localStorage.getItem("theme") || "system";
