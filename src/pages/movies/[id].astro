@@ -29,7 +29,26 @@ const genres = movie_details.genres.map((genre) => genre.name);
 const { Content } = await render(movie_local_data);
 ---
 
-<BaseLayout>
+<BaseLayout
+  title={`${movie_details.title} Review`}
+  description={movie_details.overview}
+  openGraph={{
+    basic: {
+      image: `https://image.tmdb.org/t/p/w500${movie_details.poster_path}`,
+      title: movie_details.title,
+      type: "article",
+    },
+    image: {
+      alt: `${movie_details.title}'s movie poster'`,
+    },
+    article: {
+      publishedTime: movie_local_data.data.publishedAt,
+      authors: ["Faisal M."],
+      section: "Movie Review",
+      tags: ["movie review", ...genres],
+    },
+  }}
+>
   <article class="flex flex-col space-y-6">
     <div class="flex flex-col space-y-8">
       <div class="border-border bg-accent/50 rounded-md border p-4">

@@ -11,6 +11,7 @@ import type { Options } from "rehype-pretty-code";
 import { transformerCopyButton } from "@rehype-pretty/transformers";
 import react from "@astrojs/react";
 import icon from "astro-icon";
+import sitemap from "@astrojs/sitemap";
 // import swup from "@swup/astro";
 
 const prettyCodeOptions: Options = {
@@ -33,6 +34,7 @@ const prettyCodeOptions: Options = {
 
 // https://astro.build/config
 export default defineConfig({
+  site: import.meta.env.PROD ? "https://mfaisal.xyz" : "http://localhost:4321",
   vite: {
     plugins: [tailwindcss()],
   },
@@ -45,5 +47,5 @@ export default defineConfig({
     ],
     remarkPlugins: [remarkGfm, remarkReadingTime],
   },
-  integrations: [mdx(), react(), icon()],
+  integrations: [mdx(), react(), icon(), sitemap()],
 });

@@ -1,6 +1,6 @@
 ---
+import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
-import PageContainer from "@/components/containers/PageContainer.astro";
 import GeneralPostsSection from "@/components/sections/GeneralPostsSection.astro";
 import ProgrammingPostsSection from "@/components/sections/ProgrammingPostsSection.astro";
 import MovieReviewsSection from "@/components/sections/MovieReviewsSection.astro";
@@ -14,13 +14,13 @@ const sortedGeneralPosts = sortPosts(await getCollection("generalPost")).slice(
 const sortedProgrammingPosts = sortPosts(
   await getCollection("programmingPost"),
 ).slice(0, 5);
-const movieIds = (await getCollection("movieReviewPost")).map(
+const movieTmdbIds = (await getCollection("movieReviewPost")).map(
   (movie) => movie.data.tmdbId,
 );
-const movies = sortMovies(await getMovies(movieIds)).slice(0, 5);
+const movies = sortMovies(await getMovies(movieTmdbIds)).slice(0, 5);
 ---
 
-<PageContainer>
+<BaseLayout title="Blog" description="All of my writings.">
   <h1 class="text-2xl font-medium">Blog</h1>
   <GeneralPostsSection
     as="h2"
@@ -33,4 +33,4 @@ const movies = sortMovies(await getMovies(movieIds)).slice(0, 5);
     viewMoreButton
   />
   <MovieReviewsSection as="h2" movies={movies} viewMoreButton />
-</PageContainer>
+</BaseLayout>

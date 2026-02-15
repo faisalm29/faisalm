@@ -2,7 +2,7 @@ import { Item, ItemContent, ItemDescription, ItemTitle } from "./ui/item";
 import { formatDate } from "@/lib/utils";
 import { normalizeCategory } from "@/lib/utils";
 
-interface LatestPost {
+export interface LatestPost {
   id: string;
   title: string;
   category: string;

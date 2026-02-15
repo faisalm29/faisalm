@@ -1,33 +1,15 @@
 ---
+import BaseLayout from "@/layouts/BaseLayout.astro";
 import SummarySection from "@/components/sections/SummarySection.astro";
 import LatestPostsSection from "@/components/sections/LatestPostsSection.astro";
 import { sortLatestPosts } from "@/lib/utils";
-import { getCollection } from "astro:content";
-import PageContainer from "@/components/containers/PageContainer.astro";
+import { getLatestPosts } from "@/lib/utils";
 
-const generalPosts = (await getCollection("generalPost")).map((post) => ({
-  id: post.id,
-  title: post.data.title,
-  category: post.data.category,
-  publishedAt: post.data.publishedAt,
-}));
-
-const programmingPosts = (await getCollection("programmingPost")).map(
-  (post) => ({
-    id: post.id,
-    title: post.data.title,
-    category: post.data.category,
-    publishedAt: post.data.publishedAt,
-  }),
-);
-
-const sortedLatestPosts = sortLatestPosts([
-  ...generalPosts,
-  ...programmingPosts,
-]).slice(0, 10);
+const latestPosts = await getLatestPosts();
+const sortedLatestPosts = sortLatestPosts(latestPosts).slice(0, 10);
 ---
 
-<PageContainer>
+<BaseLayout>
   <SummarySection />
   <LatestPostsSection latesPost={sortedLatestPosts} viewMoreButton />
-</PageContainer>
+</BaseLayout>

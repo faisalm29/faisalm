@@ -5,6 +5,7 @@ import { Image } from "astro:assets";
 import { formatDate } from "@/lib/utils";
 import { Icon } from "astro-icon/components";
 import { MDXComponents } from "@/components/mdx/MDXComponets";
+import { getImage } from "astro:assets";
 
 export const getStaticPaths = async () => {
   const programmingPosts = await getCollection("programmingPost");
@@ -16,9 +17,39 @@ export const getStaticPaths = async () => {
 
 const { post } = Astro.props;
 const { Content, remarkPluginFrontmatter } = await render(post);
+
+let ogImageURL: string;
+if (post.data.thumbnail) {
+  const thumbnail = await getImage({
+    src: post.data.thumbnail,
+    format: "jpeg",
+  });
+  ogImageURL = new URL(thumbnail.src, Astro.url.origin).href;
+} else {
+  ogImageURL = new URL("/opengraph-image.jpg", Astro.url.origin).href;
+}
 ---
 
-<BaseLayout>
+<BaseLayout
+  title={post.data.title}
+  description={post.data.excerpt}
+  openGraph={{
+    basic: {
+      image: ogImageURL,
+      title: post.data.title,
+      type: "article",
+    },
+    image: {
+      alt: `${post.data.title} post's thumbnail'`,
+    },
+    article: {
+      publishedTime: post.data.publishedAt,
+      authors: ["Faisal M."],
+      section: "Programming Writings",
+      tags: ["programming"],
+    },
+  }}
+>
   <article class="flex flex-col space-y-6">
     <div class="flex flex-col space-y-8">
       {
@@ -28,9 +59,8 @@ const { Content, remarkPluginFrontmatter } = await render(post);
               src={post.data.thumbnail}
               alt={post.data.title}
               layout="constrained"
-              width={300}
-              height={150}
               format="webp"
+              class="h-full w-full object-cover object-center"
             />
           </div>
         )

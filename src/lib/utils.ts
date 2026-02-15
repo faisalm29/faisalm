@@ -1,6 +1,9 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { Movie } from "./tmdb.types";
+import type { LatestPost } from "@/components/LatestPostItem";
+import { getCollection } from "astro:content";
+import { getMovies } from "./tmdb";
 
 type WithPublishedAt = {
   data: {
@@ -67,4 +70,48 @@ export const convertMsToMinutes = (ms: number) => {
 export const normalizeCategory = (category: string) => {
   if (category === "movies") return "movie reviews";
   return category;
+};
+
+export const getLatestPosts = async (): Promise<LatestPost[]> => {
+  const movieTmdbIds = (await getCollection("movieReviewPost")).map(
+    (movie) => movie.data.tmdbId,
+  );
+  let movies: Awaited<ReturnType<typeof getMovies>> = [];
+
+  try {
+    movies = await getMovies(movieTmdbIds);
+  } catch (e) {
+    console.error("Failed to fetch movies from TMDB", e);
+  }
+
+  const generalPosts = (await getCollection("generalPost")).map((post) => ({
+    id: post.id,
+    title: post.data.title,
+    category: post.data.category,
+    publishedAt: post.data.publishedAt,
+  }));
+
+  const programmingPosts = (await getCollection("programmingPost")).map(
+    (post) => ({
+      id: post.id,
+      title: post.data.title,
+      category: post.data.category,
+      publishedAt: post.data.publishedAt,
+    }),
+  );
+
+  const movieReviewPosts = movies.map((post) => ({
+    id: post.movie_local_data.id,
+    title: post.movie_details.title,
+    category: post.movie_local_data.data.category,
+    publishedAt: post.movie_local_data.data.publishedAt,
+  }));
+
+  const LatestPost = [
+    ...generalPosts,
+    ...programmingPosts,
+    ...movieReviewPosts,
+  ];
+
+  return LatestPost;
 };

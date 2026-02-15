@@ -1,5 +1,5 @@
 ---
-import PageContainer from "@/components/containers/PageContainer.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
 import ProgrammingPostsSection from "@/components/sections/ProgrammingPostsSection.astro";
 import { getCollection } from "astro:content";
 import { sortPosts } from "@/lib/utils";
@@ -9,6 +9,9 @@ const sortedProgrammingPosts = sortPosts(
 );
 ---
 
-<PageContainer>
+<BaseLayout
+  title="Programming Writings"
+  description="Writings specifically about programming."
+>
   <ProgrammingPostsSection programmingPosts={sortedProgrammingPosts} />
-</PageContainer>
+</BaseLayout>

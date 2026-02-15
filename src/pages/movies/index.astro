@@ -1,16 +1,19 @@
 ---
-import PageContainer from "@/components/containers/PageContainer.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
 import MovieReviewsSection from "@/components/sections/MovieReviewsSection.astro";
 import { getCollection } from "astro:content";
 import { getMovies } from "@/lib/tmdb";
 import { sortMovies } from "@/lib/utils";
 
-const movieIds = (await getCollection("movieReviewPost")).map(
+const movieTmdbIds = (await getCollection("movieReviewPost")).map(
   (movie) => movie.data.tmdbId,
 );
-const movies = sortMovies(await getMovies(movieIds));
+const movies = sortMovies(await getMovies(movieTmdbIds));
 ---
 
-<PageContainer>
+<BaseLayout
+  title="Movie Reviews"
+  description="My take on the movies I've watched recently."
+>
   <MovieReviewsSection movies={movies} />
-</PageContainer>
+</BaseLayout>

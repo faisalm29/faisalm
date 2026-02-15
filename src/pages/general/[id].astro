@@ -5,6 +5,7 @@ import { Image } from "astro:assets";
 import { formatDate } from "@/lib/utils";
 import { Icon } from "astro-icon/components";
 import { MDXComponents } from "@/components/mdx/MDXComponets";
+import { getImage } from "astro:assets";
 
 export const getStaticPaths = async () => {
   const generalPosts = await getCollection("generalPost");
@@ -15,10 +16,40 @@ export const getStaticPaths = async () => {
 };
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, remarkPluginFrontmatter } = await render(post);
+
+let ogImageURL: string;
+if (post.data.thumbnail) {
+  const thumbnail = await getImage({
+    src: post.data.thumbnail,
+    format: "jpeg",
+  });
+  ogImageURL = new URL(thumbnail.src, Astro.url.origin).href;
+} else {
+  ogImageURL = new URL("/opengraph-image.jpg", Astro.url.origin).href;
+}
 ---
 
-<BaseLayout>
+<BaseLayout
+  title={post.data.title}
+  description={post.data.excerpt}
+  openGraph={{
+    basic: {
+      image: ogImageURL,
+      title: post.data.title,
+      type: "article",
+    },
+    image: {
+      alt: `${post.data.title} post's thumbnail'`,
+    },
+    article: {
+      publishedTime: post.data.publishedAt,
+      authors: ["Faisal M."],
+      section: "General Writings",
+      tags: ["general"],
+    },
+  }}
+>
   <article class="flex flex-col space-y-6">
     <div class="flex flex-col space-y-8">
       {
@@ -29,6 +60,7 @@ const { Content } = await render(post);
               alt={post.data.title}
               layout="constrained"
               format="webp"
+              class="h-full w-full object-cover object-center"
             />
           </div>
         )
@@ -45,7 +77,9 @@ const { Content } = await render(post);
         </div>
         <div class="flex items-center gap-2">
           <Icon name="timer" size={16} class="text-muted-foreground" />
-          <!-- <p class="text-muted-foreground text-sm">{post.readTime}</p> -->
+          <p class="text-muted-foreground text-sm">
+            {remarkPluginFrontmatter.readingTime}
+          </p>
         </div>
       </div>
       <h1 class="text-2xl font-semibold">{post.data.title}</h1>
