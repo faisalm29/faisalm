@@ -43,7 +43,7 @@ if (post.data.thumbnail) {
       alt: `${post.data.title} post's thumbnail'`,
     },
     article: {
-      publishedTime: post.data.publishedAt,
+      publishedTime: new Date(post.data.publishedAt).toISOString(),
       authors: ["Faisal M."],
       section: "Programming Writings",
       tags: ["programming"],

@@ -34,6 +34,14 @@ const prettyCodeOptions: Options = {
 
 // https://astro.build/config
 export default defineConfig({
+  image: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "image.tmdb.org",
+      },
+    ],
+  },
   site: import.meta.env.PROD ? "https://mfaisal.xyz" : "http://localhost:4321",
   vite: {
     plugins: [tailwindcss()],

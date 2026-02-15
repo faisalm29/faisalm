@@ -6,6 +6,7 @@ import { Image } from "astro:assets";
 import { formatDate, getYear } from "@/lib/utils";
 import { Icon } from "astro-icon/components";
 import { MDXComponents } from "@/components/mdx/MDXComponets";
+import { getImage } from "astro:assets";
 
 export const getStaticPaths = async () => {
   const movieReviewPosts = await getCollection("movieReviewPost");
@@ -18,23 +19,35 @@ export const getStaticPaths = async () => {
 const { tmdbId } = Astro.props;
 
 const movie = await getMovieById(tmdbId);
+
 const { movie_local_data, movie_details, movie_credits } = movie;
 
 const directors = movie_credits.crew
   .filter((crew) => crew.job === "Director")
   .map((crew) => crew.name);
+
 const casts = movie_credits.cast.slice(0, 5).map((cast) => cast.name);
+
 const genres = movie_details.genres.map((genre) => genre.name);
 
 const { Content } = await render(movie_local_data);
+
+const optimizedOgImage = await getImage({
+  src: `https://image.tmdb.org/t/p/w500${movie_details.poster_path}`,
+  width: 500,
+  height: 750,
+  format: "jpeg",
+});
+
+const ogImageURL = new URL(optimizedOgImage.src, Astro.url.origin).href;
 ---
 
 <BaseLayout
-  title={`${movie_details.title} Review`}
+  title={`${movie_details.title} Movie Review`}
   description={movie_details.overview}
   openGraph={{
     basic: {
-      image: `https://image.tmdb.org/t/p/w500${movie_details.poster_path}`,
+      image: ogImageURL,
       title: movie_details.title,
       type: "article",
     },
@@ -42,7 +55,7 @@ const { Content } = await render(movie_local_data);
       alt: `${movie_details.title}'s movie poster'`,
     },
     article: {
-      publishedTime: movie_local_data.data.publishedAt,
+      publishedTime: new Date(movie_local_data.data.publishedAt).toISOString(),
       authors: ["Faisal M."],
       section: "Movie Review",
       tags: ["movie review", ...genres],
