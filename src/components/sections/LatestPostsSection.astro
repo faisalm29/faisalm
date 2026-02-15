@@ -1,0 +1,39 @@
+---
+import SectionContainer from "../containers/SectionContainer.astro";
+import { LatestPostItem } from "../LatestPostItem";
+import ViewMoreButton from "@/components/ViewMoreButton.astro";
+
+interface LatesPost {
+  id: string;
+  title: string;
+  category: string;
+  publishedAt: string;
+}
+
+interface Props {
+  latesPost: LatesPost[];
+  viewMoreButton?: boolean;
+}
+
+const { latesPost, viewMoreButton } = Astro.props;
+---
+
+<SectionContainer>
+  <h1 class="text-2xl font-medium">Latest Posts</h1>
+  <ul>
+    {
+      latesPost.map((post) => (
+        <li>
+          <LatestPostItem post={post} />
+        </li>
+      ))
+    }
+    {
+      viewMoreButton && (
+        <li class="mt-2">
+          <ViewMoreButton href="/blog" />
+        </li>
+      )
+    }
+  </ul>
+</SectionContainer>

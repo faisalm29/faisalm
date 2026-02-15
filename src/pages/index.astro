@@ -1,8 +1,9 @@
 ---
-import BaseLayout from "@/layouts/BaseLayout.astro";
-import { Summary, LatestPosts } from "@/components/sections";
+import SummarySection from "@/components/sections/SummarySection.astro";
+import LatestPostsSection from "@/components/sections/LatestPostsSection.astro";
 import { sortLatestPosts } from "@/lib/utils";
 import { getCollection } from "astro:content";
+import PageContainer from "@/components/containers/PageContainer.astro";
 
 const generalPosts = (await getCollection("generalPost")).map((post) => ({
   id: post.id,
@@ -26,7 +27,7 @@ const sortedLatestPosts = sortLatestPosts([
 ]).slice(0, 10);
 ---
 
-<BaseLayout>
-  <Summary />
-  <LatestPosts latesPost={sortedLatestPosts} viewMoreButton />
-</BaseLayout>
+<PageContainer>
+  <SummarySection />
+  <LatestPostsSection latesPost={sortedLatestPosts} viewMoreButton />
+</PageContainer>

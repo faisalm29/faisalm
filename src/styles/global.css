@@ -1,10 +1,45 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/Geist-Italic.woff2") format("woff2");
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/Geist-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("/fonts/GeistMono-Regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("/fonts/GeistMono-Italic.woff2") format("woff2");
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
 @theme inline {
+  --font-sans: "Geist", "sans-serif";
+  --font-mono: "Geist Mono";
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -120,5 +155,162 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  code[data-theme*=" "],
+  code[data-theme*=" "] span {
+    color: var(--shiki-light);
+    background-color: transparent;
+  }
+
+  .dark code[data-theme*=" "],
+  .dark code[data-theme*=" "] span {
+    color: var(--shiki-dark) !important;
+    background-color: transparent !important;
+  }
+
+  .prose figure[data-rehype-pretty-code-figure] {
+    @apply border-border! relative! overflow-hidden! rounded-xl! border! font-mono!;
+  }
+
+  .prose figcaption[data-rehype-pretty-code-title] {
+    @apply border-border! bg-accent/50! text-foreground! -mt-[1px]! rounded-t-xl! border-b! p-3! text-xs! font-medium!;
+    @apply pr-12!;
+  }
+
+  .prose code::before,
+  .prose code::after {
+    @apply content-none!;
+  }
+
+  .prose pre {
+    @apply m-0! overflow-x-auto! bg-transparent! p-0!;
+    scrollbar-color: rgba(115, 115, 115) rgba(245, 245, 245, 0.5) !important;
+    position: static !important;
+  }
+
+  .dark .prose pre {
+    scrollbar-color: rgba(161, 161, 161, 1) rgba(38, 38, 38, 0.5) !important;
+  }
+
+  .prose code {
+    @apply block! p-3!;
+    position: static !important;
+    padding-right: 3.5rem !important;
+  }
+
+  .prose figure[data-rehype-pretty-code-figure] button {
+    @apply border-border bg-background/50 hover:bg-accent! absolute! z-20 h-8 w-8 rounded-md border backdrop-blur-sm transition-all;
+    right: 0.75rem !important;
+    top: 3.25rem !important;
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .prose figure[data-rehype-pretty-code-figure] button span {
+    @apply flex items-center justify-center;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 16px;
+  }
+
+  .prose h1 {
+    @apply text-foreground! text-2xl! leading-tight! font-semibold! tracking-tight!;
+  }
+
+  .prose h2 {
+    @apply text-foreground! text-xl! leading-tight! font-semibold! tracking-tight!;
+  }
+
+  .prose h3 {
+    @apply text-foreground! text-lg! leading-tight! font-semibold! tracking-tight!;
+  }
+
+  .prose h4 {
+    @apply text-foreground! text-base! leading-tight! font-medium! tracking-tight!;
+  }
+
+  .prose h5 {
+    @apply text-foreground! text-base! leading-tight! font-medium! tracking-tight!;
+  }
+
+  .prose h6 {
+    @apply text-foreground! text-base! leading-tight! font-medium! tracking-tight!;
+  }
+
+  .prose strong {
+    @apply text-foreground! font-medium!;
+  }
+
+  .prose a {
+    @apply text-primary underline underline-offset-4;
+  }
+
+  .prose blockquote {
+    @apply bg-accent/50 border-muted-foreground! rounded-md rounded-l-none border-l-4 p-4 pl-4 italic;
+  }
+
+  .prose blockquote p {
+    @apply text-muted-foreground! m-0! font-normal!;
+  }
+
+  .prose blockquote p::before {
+    @apply content-none!;
+  }
+
+  .prose blockquote p::after {
+    @apply content-none!;
+  }
+
+  .prose blockquote p:first-child {
+    @apply mt-0!;
+  }
+
+  /* Task lists (remark-gfm): remove bullet marker so it renders like a pure checklist */
+  .prose :where(ul.contains-task-list):not(:where([class~="not-prose"] *)) {
+    @apply list-none! pl-0!;
+  }
+
+  .prose :where(li.task-list-item):not(:where([class~="not-prose"] *)) {
+    @apply pl-0!;
+  }
+
+  .prose
+    :where(li.task-list-item > input[type="checkbox"]):not(
+      :where([class~="not-prose"] *)
+    ) {
+    @apply mr-2 align-middle!;
+  }
+
+  .prose :where(table):not(:where([class~="not-prose"]) *) {
+    @apply w-full min-w-full;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .prose :where(th):not(:where([class~="not-prose"] *)),
+  .prose :where(td):not(:where([class~="not-prose"] *)) {
+    @apply m-0 px-6 py-4 align-middle whitespace-nowrap;
+  }
+
+  .prose tr {
+    @apply hover:bg-accent/50! h-10! transition-colors!;
+  }
+
+  .prose :where(th):not(:where([class~="not-prose"] *)) {
+    @apply text-foreground! border-border bg-accent/50 m-0! border-b p-3! py-2! text-left font-semibold;
+  }
+
+  .prose :where(td):not(:where([class~="not-prose"] *)) {
+    @apply text-muted-foreground border-border border-b p-2! text-sm!;
+  }
+
+  .prose :where(th:not(:last-child)):not(:where([class~="not-prose"] *)),
+  .prose :where(td:not(:last-child)):not(:where([class~="not-prose"] *)) {
+    @apply border-border border-r;
+  }
+
+  .prose :where(tbody tr:last-child td):not(:where([class~="not-prose"] *)) {
+    @apply border-b-0;
   }
 }

@@ -1,0 +1,40 @@
+---
+import type { CollectionEntry } from "astro:content";
+import SectionContainer from "../containers/SectionContainer.astro";
+import { PostItem } from "../PostItem";
+import ViewMoreButton from "@/components/ViewMoreButton.astro";
+import type { Polymorphic } from "astro/types";
+
+type HeadingTags = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+
+type Props<Tag extends HeadingTags = "h1"> = Polymorphic<{
+  programmingPosts: CollectionEntry<"programmingPost">[];
+  viewMoreButton?: boolean;
+  as: Tag;
+}>;
+
+const itemHeading = Astro.url.pathname === "/programming" ? "h2" : "h3";
+const { programmingPosts, viewMoreButton, as: Tag = "h1" } = Astro.props;
+---
+
+<SectionContainer>
+  <Tag class={`font-medium ${Tag === "h1" ? "text-2xl" : "text-xl"}`}
+    >Programming</Tag
+  >
+  <ul>
+    {
+      programmingPosts.map((post) => (
+        <li>
+          <PostItem as={itemHeading} post={post} />
+        </li>
+      ))
+    }
+    {
+      viewMoreButton && (
+        <li class="mt-2">
+          <ViewMoreButton href="/programming" />
+        </li>
+      )
+    }
+  </ul>
+</SectionContainer>

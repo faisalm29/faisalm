@@ -16,7 +16,7 @@ const LatestPostItem = ({ post }: { post: LatestPost }) => {
       <a href={`/${category}/${id}`}>
         <ItemContent>
           <ItemTitle>
-            <h3>{title}</h3>
+            <h2>{title}</h2>
           </ItemTitle>
           <ItemDescription className="capitalize">
             {normalizeCategory(category)}

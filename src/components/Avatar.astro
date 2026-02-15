@@ -1,0 +1,38 @@
+---
+import { Image } from "astro:assets";
+import { cn } from "@/lib/utils";
+
+interface Props {
+  src?: string;
+  alt?: string;
+  fallback: string;
+  class?: string;
+}
+
+const { src, alt = "", fallback, class: className } = Astro.props;
+---
+
+<div
+  class={cn(
+    "relative flex h-14 w-14 shrink-0 overflow-hidden rounded-full bg-muted",
+    className,
+  )}
+>
+  {
+    src ? (
+      <img
+        src={src}
+        alt={alt}
+        class="aspect-square h-full w-full object-cover"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+      />
+    ) : null
+  }
+
+  <div
+    class="bg-muted flex h-full w-full items-center justify-center rounded-full text-sm font-medium"
+    style={src ? "display: none;" : "display: flex;"}
+  >
+    {fallback}
+  </div>
+</div>

@@ -1,0 +1,40 @@
+---
+import SectionContainer from "../containers/SectionContainer.astro";
+import MovieItem from "@/components/MovieItem.astro";
+import ViewMoreMoviesButton from "@/components/ViewMoreMoviesButton.astro";
+import type { Movie } from "@/lib/tmdb.types";
+import type { Polymorphic } from "astro/types";
+
+type HeadingTags = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+
+type Props<Tag extends HeadingTags = "h1"> = Polymorphic<{
+  movies: Movie[];
+  viewMoreButton?: boolean;
+  as: Tag;
+}>;
+
+const itemHeading = Astro.url.pathname === "/movies" ? "h2" : "h3";
+const { movies, viewMoreButton, as: Tag = "h1" } = Astro.props;
+---
+
+<SectionContainer>
+  <Tag class={`font-medium ${Tag === "h1" ? "text-2xl" : "text-xl"}`}
+    >Movie Reviews</Tag
+  >
+  <ul class="grid grid-cols-2 gap-3 md:grid-cols-3">
+    {
+      movies.map((movie) => (
+        <li>
+          <MovieItem as={itemHeading} movie={movie} />
+        </li>
+      ))
+    }
+    {
+      viewMoreButton && (
+        <li>
+          <ViewMoreMoviesButton href="/movies" />
+        </li>
+      )
+    }
+  </ul>
+</SectionContainer>

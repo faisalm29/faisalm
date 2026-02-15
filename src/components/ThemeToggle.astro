@@ -1,0 +1,74 @@
+---
+import { Icon } from "astro-icon/components";
+---
+
+<button
+  id="theme-cycle-button"
+  class="hover:bg-accent text-muted-foreground hover:text-foreground pointer-events-auto relative flex items-center justify-center rounded-lg p-2 transition-all duration-300 ease-in-out active:scale-95"
+  aria-label="Toggle theme"
+>
+  {/* The icons are shown/hidden based on a data-attribute we set via JS */}
+  <div class="theme-icon hidden" data-icon="light">
+    <Icon name="sun" class="h-5 w-5" />
+  </div>
+  <div class="theme-icon hidden" data-icon="dark">
+    <Icon name="moon" class="h-5 w-5" />
+  </div>
+  <div class="theme-icon hidden" data-icon="system">
+    <Icon name="monitor" class="h-5 w-5" />
+  </div>
+</button>
+
+<style>
+  /* Simple CSS to show only the active theme's icon */
+  :global([data-active-theme="light"]) [data-icon="light"] {
+    display: block;
+  }
+  :global([data-active-theme="dark"]) [data-icon="dark"] {
+    display: block;
+  }
+  :global([data-active-theme="system"]) [data-icon="system"] {
+    display: block;
+  }
+</style>
+
+<script>
+  function initThemeCycle() {
+    const btn = document.getElementById("theme-cycle-button");
+    if (!btn) return;
+
+    const themes = ["system", "light", "dark"] as const;
+
+    const updateTheme = (newTheme: (typeof themes)[number]) => {
+      // 1. Save preference
+      localStorage.setItem("theme", newTheme);
+
+      // 2. Update UI (which icon shows)
+      document.documentElement.setAttribute("data-active-theme", newTheme);
+
+      // 3. Apply actual dark class
+      const isDark =
+        newTheme === "dark" ||
+        (newTheme === "system" &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+      document.documentElement.classList.toggle("dark", isDark);
+    };
+
+    btn.addEventListener("click", () => {
+      const currentTheme =
+        (localStorage.getItem("theme") as (typeof themes)[number]) || "system";
+      const nextIndex = (themes.indexOf(currentTheme) + 1) % themes.length;
+      updateTheme(themes[nextIndex]);
+    });
+
+    // Initialize UI state on load
+    const savedTheme =
+      (localStorage.getItem("theme") as (typeof themes)[number]) || "system";
+    document.documentElement.setAttribute("data-active-theme", savedTheme);
+  }
+
+  // Handle initialization and View Transitions
+  initThemeCycle();
+  document.addEventListener("astro:page-load", initThemeCycle);
+</script>

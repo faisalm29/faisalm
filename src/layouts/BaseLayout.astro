@@ -1,28 +1,49 @@
 ---
 import "../styles/global.css";
-import { Header } from "@/components/sections/Header";
+import Header from "@/components/sections/Header.astro";
+import Navbar from "@/components/Navbar.astro";
+import Footer from "@/components/sections/Footer.astro";
+import { ClientRouter } from "astro:transitions";
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" transition:name="root" transition:animate="none">
   <head>
+    <script is:inline>
+      const setTheme = () => {
+        const theme = localStorage.getItem("theme") || "system";
+        const isDark =
+          theme === "dark" ||
+          (theme === "system" &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+        document.documentElement.classList.toggle("dark", isDark);
+        document.documentElement.setAttribute("data-active-theme", theme);
+      };
+
+      // Run on initial load
+      setTheme();
+
+      // Run every time Astro swaps the page content
+      document.addEventListener("astro:after-swap", setTheme);
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
     <title>Astro Basics</title>
-    <!-- <ClientRouter /> -->
+    <ClientRouter />
   </head>
   <body>
     <div class="relative min-h-screen w-full">
       <div
         class="relative z-10 container mx-auto flex min-h-screen max-w-[60ch] flex-col gap-12 px-6 py-12 sm:py-24"
       >
-        <Header client:load />
-        <main>
-          <slot />
-        </main>
+        <Header />
+        <slot />
+        <Navbar pathname={Astro.url.pathname} transition:persist />
+        <Footer />
       </div>
     </div>
   </body>

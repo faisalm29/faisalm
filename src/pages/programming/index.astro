@@ -1,7 +1,6 @@
 ---
-import BaseLayout from "@/layouts/BaseLayout.astro";
-import { PageContainer } from "@/components/containers";
-import { ProgrammingPosts } from "@/components/sections";
+import PageContainer from "@/components/containers/PageContainer.astro";
+import ProgrammingPostsSection from "@/components/sections/ProgrammingPostsSection.astro";
 import { getCollection } from "astro:content";
 import { sortPosts } from "@/lib/utils";
 
@@ -10,8 +9,6 @@ const sortedProgrammingPosts = sortPosts(
 );
 ---
 
-<BaseLayout>
-  <PageContainer>
-    <ProgrammingPosts programmingPosts={sortedProgrammingPosts} />
-  </PageContainer>
-</BaseLayout>
+<PageContainer>
+  <ProgrammingPostsSection programmingPosts={sortedProgrammingPosts} />
+</PageContainer>

@@ -1,0 +1,24 @@
+---
+import CustomLink from "@/components/CustomLink.astro";
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"section"> {}
+
+const { class: className, ...props } = Astro.props;
+---
+
+<section {...props} class={className}>
+  <p class="text-muted-foreground leading-[1.68]">
+    I created this blog as a record and to implement the learning that I have
+    gone through on web development. My journey in learning web development and
+    what I am adding to this blog can be found in the{" "}
+    <CustomLink variant="secondary" href="/programming">
+      programming
+    </CustomLink>{" "}
+    section. The rest can be found in the{" "}
+    <CustomLink variant="secondary" href="/general"> general </CustomLink>{" "}
+    and{" "}
+    <CustomLink variant="secondary" href="/movies"> movies </CustomLink>{" "}
+    section for what interests me.
+  </p>
+</section>

@@ -1,0 +1,12 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { cn } from "@/lib/utils";
+
+interface Props extends HTMLAttributes<"section"> {}
+
+const { class: className, ...props } = Astro.props;
+---
+
+<section {...props} class={cn("flex flex-col space-y-4", className)}>
+  <slot />
+</section>

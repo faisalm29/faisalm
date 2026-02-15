@@ -6,9 +6,13 @@ type BlogCollection = "generalPost" | "programmingPost";
 
 interface PostItemProps<T extends BlogCollection> {
   post: CollectionEntry<T>;
+  as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
-const PostItem = <T extends BlogCollection>({ post }: PostItemProps<T>) => {
+const PostItem = <T extends BlogCollection>({
+  post,
+  as: Tag = "h1",
+}: PostItemProps<T>) => {
   const id = post.id;
   const { title, excerpt, category, publishedAt } = post.data;
   return (
@@ -16,7 +20,7 @@ const PostItem = <T extends BlogCollection>({ post }: PostItemProps<T>) => {
       <a href={`/${category}/${id}`}>
         <ItemContent>
           <ItemTitle>
-            <h3>{title}</h3>
+            <Tag>{title}</Tag>
           </ItemTitle>
           <ItemDescription>{excerpt}</ItemDescription>
         </ItemContent>

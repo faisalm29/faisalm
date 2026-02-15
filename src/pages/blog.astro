@@ -1,13 +1,10 @@
 ---
 import { getCollection } from "astro:content";
-import { PageContainer } from "@/components/containers";
-import {
-  GeneralPosts,
-  ProgrammingPosts,
-  MovieReviews,
-} from "@/components/sections";
+import PageContainer from "@/components/containers/PageContainer.astro";
+import GeneralPostsSection from "@/components/sections/GeneralPostsSection.astro";
+import ProgrammingPostsSection from "@/components/sections/ProgrammingPostsSection.astro";
+import MovieReviewsSection from "@/components/sections/MovieReviewsSection.astro";
 import { sortPosts, sortMovies } from "@/lib/utils";
-import BaseLayout from "@/layouts/BaseLayout.astro";
 import { getMovies } from "@/lib/tmdb";
 
 const sortedGeneralPosts = sortPosts(await getCollection("generalPost")).slice(
@@ -23,14 +20,17 @@ const movieIds = (await getCollection("movieReviewPost")).map(
 const movies = sortMovies(await getMovies(movieIds)).slice(0, 5);
 ---
 
-<BaseLayout>
-  <PageContainer>
-    <h1>Blog</h1>
-    <GeneralPosts generalPosts={sortedGeneralPosts} viewMorebutton />
-    <ProgrammingPosts
-      programmingPosts={sortedProgrammingPosts}
-      viewMoreButton
-    />
-    <MovieReviews movies={movies} viewMoreButton />
-  </PageContainer>
-</BaseLayout>
+<PageContainer>
+  <h1 class="text-2xl font-medium">Blog</h1>
+  <GeneralPostsSection
+    as="h2"
+    generalPosts={sortedGeneralPosts}
+    viewMoreButton
+  />
+  <ProgrammingPostsSection
+    as="h2"
+    programmingPosts={sortedProgrammingPosts}
+    viewMoreButton
+  />
+  <MovieReviewsSection as="h2" movies={movies} viewMoreButton />
+</PageContainer>

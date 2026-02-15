@@ -2,12 +2,16 @@
 import { Image } from "astro:assets";
 import { getYear } from "@/lib/utils";
 import type { Movie } from "@/lib/tmdb.types";
+import type { Polymorphic } from "astro/types";
 
-interface Props {
+type HeadingTags = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+
+type Props<Tag extends HeadingTags = "h3"> = Polymorphic<{
   movie: Movie;
-}
+  as: Tag;
+}>;
 
-const { movie } = Astro.props;
+const { movie, as: Tag = "h3" } = Astro.props;
 const { movie_local_data, movie_details } = movie;
 const { title, poster_path, release_date } = movie_details;
 const {
@@ -34,12 +38,13 @@ const {
         }}
         width={500}
         height={750}
+        transition:name={`hero-${id}`}
       />
     </div>
     <div>
-      <h3 class="line-clamp-1 text-sm font-medium">
+      <Tag class="line-clamp-1 text-sm font-medium">
         {title}
-      </h3>
+      </Tag>
       <time datetime={release_date} class="text-muted-foreground text-sm">
         {getYear(release_date)}
       </time>

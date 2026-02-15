@@ -1,0 +1,21 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { cn } from "@/lib/utils";
+
+interface Props extends HTMLAttributes<"a"> {}
+
+const { href, class: className, ...props } = Astro.props;
+---
+
+<a
+  {...props}
+  href={href}
+  target="_blank"
+  class={cn("border-border group block rounded-md border p-2", className)}
+>
+  <div
+    class="bg-muted/50 text-muted-foreground group-hover:bg-muted group-hover:text-foreground group flex items-center justify-between rounded-sm p-2 transition-all duration-300 ease-in-out"
+  >
+    <slot />
+  </div>
+</a>
