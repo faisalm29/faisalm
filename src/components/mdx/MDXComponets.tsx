@@ -1,11 +1,5 @@
 import React from "react";
-import { Hash } from "lucide-react";
-// import Link, { type LinkProps } from "next/link";
-// import { CustomLink } from "./CustomLink";
-
-type CodeProps = React.ComponentProps<"code"> & {
-  "data-language"?: string;
-};
+import { Hash } from "@/components/icons/Hash";
 
 type AnchorLinkProps = Omit<React.ComponentProps<"a">, "href"> & {
   href: string;
