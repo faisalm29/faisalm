@@ -35,18 +35,16 @@ import { Icon } from "astro-icon/components";
 <script>
   function initThemeCycle() {
     const btn = document.getElementById("theme-cycle-button");
+    // Important: if the button isn't found, we stop.
+    // Swup might trigger this before the DOM is fully ready if not careful.
     if (!btn) return;
 
     const themes = ["system", "light", "dark"] as const;
 
     const updateTheme = (newTheme: (typeof themes)[number]) => {
-      // 1. Save preference
       localStorage.setItem("theme", newTheme);
-
-      // 2. Update UI (which icon shows)
       document.documentElement.setAttribute("data-active-theme", newTheme);
 
-      // 3. Apply actual dark class
       const isDark =
         newTheme === "dark" ||
         (newTheme === "system" &&
@@ -55,20 +53,30 @@ import { Icon } from "astro-icon/components";
       document.documentElement.classList.toggle("dark", isDark);
     };
 
-    btn.addEventListener("click", () => {
+    // Remove old listener before adding a new one to prevent double-firing
+    // if the component persists across pages.
+    btn.replaceWith(btn.cloneNode(true));
+    const newBtn = document.getElementById("theme-cycle-button")!;
+
+    newBtn.addEventListener("click", () => {
       const currentTheme =
         (localStorage.getItem("theme") as (typeof themes)[number]) || "system";
       const nextIndex = (themes.indexOf(currentTheme) + 1) % themes.length;
       updateTheme(themes[nextIndex]);
     });
 
-    // Initialize UI state on load
+    // Sync UI state
     const savedTheme =
       (localStorage.getItem("theme") as (typeof themes)[number]) || "system";
     document.documentElement.setAttribute("data-active-theme", savedTheme);
   }
 
-  // Handle initialization and View Transitions
+  // 1. Run on initial page load
   initThemeCycle();
-  document.addEventListener("astro:page-load", initThemeCycle);
+
+  // 2. Run after Swup replaces the content
+  document.addEventListener("swup:content:replace", initThemeCycle);
+
+  // 3. Keep this as a fallback for non-swup navigations
+  document.addEventListener("astro:after-swap", initThemeCycle);
 </script>

@@ -4,7 +4,6 @@ import Header from "@/components/sections/Header.astro";
 import Navbar from "@/components/Navbar.astro";
 import Footer from "@/components/sections/Footer.astro";
 import { type SEOProps, SEO } from "astro-seo";
-import { ClientRouter } from "astro:transitions";
 
 type Props = SEOProps;
 
@@ -22,9 +21,8 @@ const ogImageURL = new URL(
 ---
 
 <!doctype html>
-<html lang="en" transition:name="root" transition:animate="none">
+<html lang="en">
   <head>
-    <ClientRouter />
     {
       import.meta.env.PROD && (
         <script
@@ -51,6 +49,24 @@ const ogImageURL = new URL(
 
       // Run every time Astro swaps the page content
       document.addEventListener("astro:after-swap", setTheme);
+    </script>
+    <!-- Layout.astro or another global file -->
+    <script>
+      import { SwupScrollPlugin } from "@swup/astro/client";
+
+      const setup = () => {
+        window.swup?.use(
+          new SwupScrollPlugin({
+            offset: 20,
+          }),
+        );
+        window.swup?.hooks.on("page:view", () => {});
+      };
+      if (window.swup) {
+        setup();
+      } else {
+        document.addEventListener("swup:enable", setup);
+      }
     </script>
     <SEO
       title={title}
@@ -105,7 +121,7 @@ const ogImageURL = new URL(
         <main class="flex flex-col space-y-12">
           <slot />
         </main>
-        <Navbar pathname={Astro.url.pathname} transition:persist />
+        <Navbar pathname={Astro.url.pathname} />
         <Footer />
       </div>
     </div>

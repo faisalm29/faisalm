@@ -1,8 +1,6 @@
 ---
-import { Separator } from "./ui/separator";
-import ThemeToggle from "./ThemeToggle.astro";
-
-const { pathname } = Astro.url;
+import ThemeToggle from "@/components/ThemeToggle.astro";
+import { Separator } from "@/components/ui/separator";
 
 const navMenu = [
   { url: "/", text: "Home" },
@@ -13,59 +11,76 @@ const navMenu = [
     activePaths: ["/general", "/programming", "/movies"],
   },
 ];
-
-const isPathActive = (menu: (typeof navMenu)[0]) => {
-  // Normalize paths to ensure trailing slashes don't break logic
-  const currentPath = pathname.replace(/\/$/, "") || "/";
-  const targetPath = menu.url.replace(/\/$/, "") || "/";
-
-  if (targetPath === "/" && currentPath === "/") return true;
-  if (targetPath !== "/" && currentPath.startsWith(targetPath)) return true;
-
-  return menu.activePaths?.some(
-    (path) => currentPath === path || currentPath.startsWith(`${path}/`),
-  );
-};
 ---
 
 <nav
   class="pointer-events-none fixed inset-x-0 bottom-0 z-50 mx-auto mb-4 flex h-11"
 >
   <div
-    class="bg-accent/20 pointer-events-auto relative mx-auto flex max-w-[calc(100vw-2rem)] items-center justify-center gap-1 rounded-lg px-1.5 py-2 shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_1px_1px_rgba(0,0,0,0.02),0_4px_8px_rgba(0,0,0,0.04)] backdrop-blur-xl dark:shadow-[0_0_0_1px_hsla(0,0%,100%,0.06)]"
+    class="bg-accent/20 pointer-events-auto relative mx-auto flex items-center justify-center gap-1 rounded-lg px-1.5 py-2 shadow-[0_0_0_1px_rgba(0,0,0,0.08),0_1px_1px_rgba(0,0,0,0.02),0_4px_8px_rgba(0,0,0,0.04)] backdrop-blur-xl dark:shadow-[0_0_0_1px_hsla(0,0%,100%,0.06)]"
   >
-    <ul class="flex items-center">
+    <ul class="flex items-center" id="nav-list">
       {
-        navMenu.map((menu) => {
-          const active = isPathActive(menu);
-
-          return (
-            <li>
-              <a
-                href={menu.url}
-                class:list={[
-                  "focus-visible:ring-ring relative px-4 py-1.5 text-base transition-colors outline-none focus-visible:ring-2",
-                  active
-                    ? "text-foreground"
-                    : "text-muted-foreground hover:text-foreground",
-                ]}
-              >
-                {/* The "Pill" is now static - no transition:name */}
-                {active && (
-                  <span class="bg-accent absolute inset-0 -z-10 rounded-md" />
-                )}
-                <span class="relative z-10">{menu.text}</span>
-              </a>
-            </li>
-          );
-        })
+        navMenu.map((menu) => (
+          <li>
+            <a
+              href={menu.url}
+              data-nav-link
+              data-active-paths={JSON.stringify(menu.activePaths || [])}
+              data-no-swup-transition
+              class="focus-visible:ring-ring text-muted-foreground hover:text-foreground relative px-4 py-1.5 text-base transition-colors outline-none"
+            >
+              <span class="nav-pill bg-accent absolute inset-0 -z-10 hidden rounded-md" />
+              <span class="relative z-10">{menu.text}</span>
+            </a>
+          </li>
+        ))
       }
     </ul>
-
     <div class="mx-0.5 flex h-4 items-center">
       <Separator orientation="vertical" className="bg-border" />
     </div>
-
     <ThemeToggle />
   </div>
 </nav>
+
+<script>
+  function updateActiveLinks() {
+    const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
+    const links = document.querySelectorAll("[data-nav-link]");
+
+    links.forEach((link) => {
+      const href = link.getAttribute("href")?.replace(/\/$/, "") || "/";
+      const activePaths = JSON.parse(
+        link.getAttribute("data-active-paths") || "[]",
+      );
+
+      // Check if primary path matches or if it's in activePaths
+      const isHome = href === "/" && currentPath === "/";
+      const isSubPath = href !== "/" && currentPath.startsWith(href);
+      const isExtraPath = activePaths.some(
+        (path: string) =>
+          currentPath === path || currentPath.startsWith(`${path}/`),
+      );
+
+      const isActive = isHome || isSubPath || isExtraPath;
+
+      // Toggle classes
+      if (isActive) {
+        link.classList.add("text-foreground");
+        link.classList.remove("text-muted-foreground");
+        link.querySelector(".nav-pill")?.classList.remove("hidden");
+      } else {
+        link.classList.remove("text-foreground");
+        link.classList.add("text-muted-foreground");
+        link.querySelector(".nav-pill")?.classList.add("hidden");
+      }
+    });
+  }
+
+  // Initial load
+  updateActiveLinks();
+
+  // Listen for swup's content replacement event
+  document.addEventListener("swup:content:replace", updateActiveLinks);
+</script>
