@@ -1,0 +1,93 @@
+name: Update Spotify (Cloudflare)
+
+on:
+  schedule:
+    # 17:00 UTC is 00:00 GMT+7
+    - cron: "0 17 * * *"
+  workflow_dispatch: # Allows manual trigger from the GitHub Actions tab
+
+jobs:
+  check-and-rebuild:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Fetch and Filter Spotify Data
+        id: spotify_check
+        run: |
+          # 1. Get Access Token using Refresh Token
+          TOKEN_RESPONSE=$(curl -s -X POST https://accounts.spotify.com/api/token \
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            -d "grant_type=refresh_token&refresh_token=${{ secrets.SPOTIFY_REFRESH_TOKEN }}&client_id=${{ secrets.SPOTIFY_CLIENT_ID }}&client_secret=${{ secrets.SPOTIFY_CLIENT_SECRET }}")
+
+          ACCESS_TOKEN=$(echo $TOKEN_RESPONSE | jq -r '.access_token')
+
+          if [ "$ACCESS_TOKEN" == "null" ]; then
+            echo "Failed to get Spotify access token"
+            exit 1
+          fi
+
+          # 2. Fetch Top 10 Tracks (short_term = approx. last 4 weeks)
+          # We filter to keep only name and artist to ensure a stable hash
+          curl -s -X GET "https://api.spotify.com/v1/me/top/tracks?limit=10&time_range=short_term" \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            | jq -c '.items[] | {name: .name, artist: .artists[0].name}' > current_spotify.json
+
+          # 3. Fail if the file is empty
+          if [ ! -s current_spotify.json ]; then
+            echo "Spotify API returned empty data."
+            exit 1
+          fi
+
+          # 4. Generate MD5 Hash
+          current_hash=$(md5sum current_spotify.json | awk '{ print $1 }')
+          echo "Current Data Hash: $current_hash"
+          echo "new_hash=$current_hash" >> $GITHUB_OUTPUT
+
+      - name: Restore Previous Hash from Cache
+        id: cache_hash
+        uses: actions/cache/restore@v4
+        with:
+          path: last_hash.txt
+          # Use a key that changes every time to force a save, but allow restore-keys to find the latest
+          key: spotify-hash-${{ github.run_id }}
+          restore-keys: |
+            spotify-hash-
+
+      - name: Compare Data and Decide
+        id: decision
+        run: |
+          if [ -f last_hash.txt ]; then
+            old_hash=$(cat last_hash.txt)
+          else
+            old_hash="none"
+          fi
+
+          echo "Old Hash: $old_hash"
+          echo "New Hash: ${{ steps.spotify_check.outputs.new_hash }}"
+
+          if [ "${{ steps.spotify_check.outputs.new_hash }}" == "$old_hash" ]; then
+            echo "No change in Top 10 tracks. Skipping rebuild."
+            echo "should_rebuild=false" >> $GITHUB_OUTPUT
+          else
+            echo "New data detected! Saving hash and triggering rebuild."
+            echo "${{ steps.spotify_check.outputs.new_hash }}" > last_hash.txt
+            echo "should_rebuild=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Save New Hash to Cache
+        if: steps.decision.outputs.should_rebuild == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: last_hash.txt
+          key: spotify-hash-${{ github.run_id }}
+
+      - name: Trigger Cloudflare Pages Rebuild
+        if: steps.decision.outputs.should_rebuild == 'true'
+        run: |
+          curl -X POST "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CLOUDFLARE_ACCOUNT_ID }}/pages/projects/${{ secrets.CLOUDFLARE_PROJECT_NAME }}/deployments" \
+          -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d '{"environment": "production"}'
