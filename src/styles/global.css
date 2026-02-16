@@ -195,14 +195,14 @@
 
   .prose code {
     @apply block! p-3!;
-    position: static !important;
+    position: relative !important;
     padding-right: 3.5rem !important;
   }
 
   .prose figure[data-rehype-pretty-code-figure] button {
     @apply border-border bg-background/50 hover:bg-accent! absolute! z-20 h-8 w-8 rounded-md border backdrop-blur-sm transition-all;
     right: 0.75rem !important;
-    top: 3.25rem !important;
+    top: 0.325rem !important;
     width: 32px !important;
     height: 32px !important;
   }
@@ -212,6 +212,14 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: 16px;
+  }
+
+  .prose p:has(code) code {
+    @apply static! inline! rounded-sm! p-0! font-medium!;
+  }
+
+  .prose code[data-language="plaintext"] {
+    @apply text-foreground!;
   }
 
   .prose h1 {

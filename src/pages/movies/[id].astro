@@ -61,11 +61,15 @@ const ogImageURL = new URL(optimizedOgImage.src, Astro.url.origin).href;
       tags: ["movie review", ...genres],
     },
   }}
+  twitter={{
+    title: movie.movie_details.title,
+    imageAlt: `${movie_details.title}'s movie poster'`,
+  }}
 >
   <article class="flex flex-col space-y-6">
     <div class="flex flex-col space-y-8">
       <div class="border-border bg-accent/50 rounded-md border p-4">
-        <div class="flex flex-col space-y-8">
+        <div class="flex flex-col space-y-4 md:space-y-8">
           <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
             {
               movie_details.poster_path && (
@@ -89,7 +93,7 @@ const ogImageURL = new URL(optimizedOgImage.src, Astro.url.origin).href;
               </div>
               <div>
                 <p class="font-medium">Casts</p>
-                <p class="text-muted-foreground">{casts.join(", ")}</p>
+                <p class="text-muted-foreground">{casts.join(", ")}, etc.</p>
               </div>
               <div>
                 <p class="font-medium">Release year</p>

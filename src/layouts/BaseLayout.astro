@@ -71,9 +71,7 @@ const ogImageURL = new URL(
         },
         image: {
           type: "image/jpeg",
-          alt: openGraph?.image?.alt
-            ? openGraph.basic.image
-            : "Faisal M's Blog.",
+          alt: openGraph?.image?.alt ? openGraph.image.alt : "Faisal M's Blog.",
         },
         article: openGraph?.article ?? {},
       }}
@@ -84,7 +82,7 @@ const ogImageURL = new URL(
         title: title ? title : "Faisal M.",
         image: ogImageURL.href,
         imageAlt: openGraph?.image?.alt
-          ? openGraph.basic.image
+          ? openGraph.image.alt
           : "Faisal M's Blog.",
         description: description,
       }}

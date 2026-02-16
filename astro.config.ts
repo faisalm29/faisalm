@@ -19,6 +19,10 @@ const prettyCodeOptions: Options = {
     dark: "github-dark",
     light: "github-light",
   },
+  defaultLang: {
+    block: "plaintext",
+    inline: "plaintext",
+  },
   keepBackground: false,
   transformers: [
     transformerCopyButton({
