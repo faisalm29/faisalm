@@ -69,9 +69,6 @@ const swup = new Swup({
 
 const setup = () => {
   swup.hooks.on("page:view", () => {});
-  swup.hooks.on("content:replace", () => {
-    window.scrollY = 0;
-  });
 };
 if (swup) {
   setup();
