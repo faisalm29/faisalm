@@ -322,14 +322,3 @@
     @apply border-b-0;
   }
 }
-
-.swuptransition-fade {
-  transition: 0.4s;
-  opacity: 1;
-  transform: none;
-}
-
-html.is-animating .swuptransition-fade {
-  opacity: 0;
-  transform: translateY(20px);
-}

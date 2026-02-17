@@ -27,7 +27,6 @@ const navMenu = [
               href={menu.url}
               data-nav-link
               data-active-paths={JSON.stringify(menu.activePaths || [])}
-              data-no-swup-transition
               class="focus-visible:ring-ring text-muted-foreground hover:text-foreground relative px-4 py-1.5 text-base transition-colors outline-none"
             >
               <span class="nav-pill bg-accent absolute inset-0 -z-10 hidden rounded-md" />
@@ -80,7 +79,4 @@ const navMenu = [
 
   // Initial load
   updateActiveLinks();
-
-  // Listen for swup's content replacement event
-  document.addEventListener("swup:content:replace", updateActiveLinks);
 </script>
