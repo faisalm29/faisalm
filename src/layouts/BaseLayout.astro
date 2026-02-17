@@ -32,40 +32,32 @@ const ogImageURL = new URL(
         />
       )
     }
+    <script src="../scripts/swup.ts"></script>
     <script is:inline>
-      const setTheme = () => {
-        const theme = localStorage.getItem("theme") || "system";
-        const isDark =
-          theme === "dark" ||
-          (theme === "system" &&
-            window.matchMedia("(prefers-color-scheme: dark)").matches);
+      const theme = (() => {
+        if (
+          typeof localStorage !== "undefined" &&
+          localStorage.getItem("app-theme")
+        ) {
+          return localStorage.getItem("app-theme");
+        }
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+          return "dark";
+        }
+        return "light";
+      })();
 
-        document.documentElement.classList.toggle("dark", isDark);
-        document.documentElement.setAttribute("data-active-theme", theme);
-      };
-
-      // Run on initial load
-      setTheme();
-
-      // Run every time Astro swaps the page content
-      document.addEventListener("astro:after-swap", setTheme);
-    </script>
-    <!-- Layout.astro or another global file -->
-    <script>
-      import { SwupScrollPlugin } from "@swup/astro/client";
-
-      const setup = () => {
-        window.swup?.use(
-          new SwupScrollPlugin({
-            offset: 20,
-          }),
-        );
-        window.swup?.hooks.on("page:view", () => {});
-      };
-      if (window.swup) {
-        setup();
+      if (theme === "dark") {
+        document.documentElement.classList.add("dark");
       } else {
-        document.addEventListener("swup:enable", setup);
+        document.documentElement.classList.remove("dark");
+      }
+
+      if (theme === "system") {
+        const isDark = window.matchMedia(
+          "(prefers-color-scheme: dark)",
+        ).matches;
+        document.documentElement.classList.toggle("dark", isDark);
       }
     </script>
     <SEO
@@ -118,7 +110,7 @@ const ogImageURL = new URL(
         class="relative z-10 container mx-auto flex min-h-screen max-w-[60ch] flex-col gap-12 px-6 py-12 sm:py-24"
       >
         <Header />
-        <main class="flex flex-col space-y-12">
+        <main id="swup" class="swuptransition-fade flex flex-col space-y-12">
           <slot />
         </main>
         <Navbar pathname={Astro.url.pathname} />

@@ -15,7 +15,9 @@
     "@astrojs/sitemap": "^3.7.0",
     "@iconify-json/lucide": "^1.2.90",
     "@rehype-pretty/transformers": "^0.13.2",
-    "@swup/astro": "^1.7.0",
+    "@swup/a11y-plugin": "^5.0.0",
+    "@swup/head-plugin": "^2.3.1",
+    "@swup/scroll-plugin": "^4.0.0",
     "@tailwindcss/vite": "^4.1.18",
     "@types/react": "^19.2.13",
     "@types/react-dom": "^19.2.3",
@@ -33,6 +35,7 @@
     "rehype-pretty-code": "^0.14.1",
     "rehype-slug": "^6.0.0",
     "remark-gfm": "^4.0.1",
+    "swup": "^4.8.2",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18"
   },
