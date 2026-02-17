@@ -75,7 +75,7 @@ import { Icon } from "astro-icon/components";
   initThemeCycle();
 
   // 2. Run after Swup replaces the content
-  document.addEventListener("swup:content:replace", initThemeCycle);
+  document.addEventListener("content:replace", initThemeCycle);
 
   // 3. Keep this as a fallback for non-swup navigations
   document.addEventListener("astro:after-swap", initThemeCycle);

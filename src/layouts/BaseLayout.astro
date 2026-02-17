@@ -33,31 +33,22 @@ const ogImageURL = new URL(
       )
     }
     <script is:inline>
-      const theme = (() => {
-        if (
-          typeof localStorage !== "undefined" &&
-          localStorage.getItem("app-theme")
-        ) {
-          return localStorage.getItem("app-theme");
-        }
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-          return "dark";
-        }
-        return "light";
-      })();
+      const setTheme = () => {
+        const theme = localStorage.getItem("theme") || "system";
+        const isDark =
+          theme === "dark" ||
+          (theme === "system" &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches);
 
-      if (theme === "dark") {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-
-      if (theme === "system") {
-        const isDark = window.matchMedia(
-          "(prefers-color-scheme: dark)",
-        ).matches;
         document.documentElement.classList.toggle("dark", isDark);
-      }
+        document.documentElement.setAttribute("data-active-theme", theme);
+      };
+
+      // Run on initial load
+      setTheme();
+
+      // Run every time Astro swaps the page content
+      document.addEventListener("astro:after-swap", setTheme);
     </script>
     <SEO
       title={title}
@@ -116,7 +107,5 @@ const ogImageURL = new URL(
         <Footer />
       </div>
     </div>
-
-    <script src="../scripts/swup.ts"></script>
   </body>
 </html>
