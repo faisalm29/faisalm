@@ -12,7 +12,6 @@ import { transformerCopyButton } from "@rehype-pretty/transformers";
 import react from "@astrojs/react";
 import icon from "astro-icon";
 import sitemap from "@astrojs/sitemap";
-// import swup from "@swup/astro";
 
 const prettyCodeOptions: Options = {
   theme: {
@@ -59,15 +58,5 @@ export default defineConfig({
     ],
     remarkPlugins: [remarkGfm, remarkReadingTime],
   },
-  integrations: [
-    // swup({
-    //   // @ts-ignore
-    //   theme: "slide",
-    //   globalInstance: true,
-    // }),
-    mdx(),
-    react(),
-    icon(),
-    sitemap(),
-  ],
+  integrations: [mdx(), react(), icon(), sitemap()],
 });
