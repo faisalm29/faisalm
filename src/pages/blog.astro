@@ -1,5 +1,5 @@
 ---
-import BaseLayout from "@/layouts/BaseLayout.astro";
+import MainLayout from "@/layouts/MainLayout.astro";
 import { getCollection } from "astro:content";
 import GeneralPostsSection from "@/components/sections/GeneralPostsSection.astro";
 import ProgrammingPostsSection from "@/components/sections/ProgrammingPostsSection.astro";
@@ -7,10 +7,11 @@ import MovieReviewsSection from "@/components/sections/MovieReviewsSection.astro
 import { sortPosts, sortMovies } from "@/lib/utils";
 import { getMovies } from "@/lib/tmdb";
 
-const sortedGeneralPosts = sortPosts(await getCollection("generalPost")).slice(
-  0,
-  5,
-);
+const sortedGeneralPosts = sortPosts(
+  await getCollection("generalPost", ({ data }) => {
+    return import.meta.env.PROD ? data.draft !== true : true;
+  }),
+).slice(0, 5);
 const sortedProgrammingPosts = sortPosts(
   await getCollection("programmingPost"),
 ).slice(0, 5);
@@ -20,7 +21,7 @@ const movieTmdbIds = (await getCollection("movieReviewPost")).map(
 const movies = sortMovies(await getMovies(movieTmdbIds)).slice(0, 5);
 ---
 
-<BaseLayout title="Blog" description="All of my writings.">
+<MainLayout title="Blog" description="All of my writings.">
   <h1 class="text-2xl font-medium">Blog</h1>
   <GeneralPostsSection
     as="h2"
@@ -33,4 +34,4 @@ const movies = sortMovies(await getMovies(movieTmdbIds)).slice(0, 5);
     viewMoreButton
   />
   <MovieReviewsSection as="h2" movies={movies} viewMoreButton />
-</BaseLayout>
+</MainLayout>

@@ -1,0 +1,26 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Header from "@/components/sections/Header.astro";
+import Navbar from "@/components/Navbar.astro";
+import Footer from "@/components/sections/Footer.astro";
+import type { SEOProps } from "astro-seo";
+
+type Props = SEOProps;
+
+const { ...props } = Astro.props;
+---
+
+<BaseLayout {...props}>
+  <div class="relative min-h-screen w-full">
+    <div
+      class="relative z-10 container mx-auto flex min-h-screen max-w-[60ch] flex-col gap-12 px-6 py-12 sm:py-24"
+    >
+      <Header />
+      <main class="flex flex-col space-y-12">
+        <slot />
+      </main>
+      <Navbar pathname={Astro.url.pathname} />
+      <Footer />
+    </div>
+  </div>
+</BaseLayout>

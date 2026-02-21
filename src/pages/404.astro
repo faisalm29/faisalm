@@ -1,0 +1,50 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getImage } from "astro:assets";
+import notFoundOgImage from "../../public/not-found-opengraph-image.jpg";
+import BackButton from "@/components/BackButton.astro";
+
+const ogImage = await getImage({
+  src: notFoundOgImage,
+  format: "jpeg",
+});
+
+const ogImageURL = new URL(ogImage.src, Astro.url.origin).href;
+
+const metadata = {
+  title: "Page Not Found",
+  description: "This page cannot be found.",
+  optimizedOgImage: ogImageURL,
+  type: "website",
+  canonicalUrl: new URL(Astro.url.pathname, Astro.site),
+};
+
+const { title, description, optimizedOgImage, type, canonicalUrl } = metadata;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  openGraph={{
+    basic: {
+      image: optimizedOgImage,
+      title: title,
+      type: type,
+      url: canonicalUrl,
+    },
+  }}
+>
+  <div class="relative h-screen w-screen">
+    <div
+      class="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col space-y-4"
+    >
+      <p class="text-center text-2xl">/ᐠ ╥ ˕ ╥マ</p>
+      <span class="text-center"
+        >Sorry, what you are looking for was not found.</span
+      >
+      <BackButton
+        class="bg-background hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-9 border px-4 py-2 shadow-xs has-[>svg]:px-3"
+      />
+    </div>
+  </div>
+</BaseLayout>

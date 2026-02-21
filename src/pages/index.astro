@@ -1,5 +1,5 @@
 ---
-import BaseLayout from "@/layouts/BaseLayout.astro";
+import MainLayout from "@/layouts/MainLayout.astro";
 import SummarySection from "@/components/sections/SummarySection.astro";
 import LatestPostsSection from "@/components/sections/LatestPostsSection.astro";
 import { sortLatestPosts } from "@/lib/utils";
@@ -9,7 +9,7 @@ const latestPosts = await getLatestPosts();
 const sortedLatestPosts = sortLatestPosts(latestPosts).slice(0, 10);
 ---
 
-<BaseLayout>
+<MainLayout>
   <SummarySection />
   <LatestPostsSection latesPost={sortedLatestPosts} viewMoreButton />
-</BaseLayout>
+</MainLayout>

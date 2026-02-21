@@ -1,5 +1,5 @@
 ---
-import BaseLayout from "@/layouts/BaseLayout.astro";
+import MainLayout from "@/layouts/MainLayout.astro";
 import { getCollection, render } from "astro:content";
 import { Image } from "astro:assets";
 import { formatDate } from "@/lib/utils";
@@ -8,7 +8,9 @@ import { MDXComponents } from "@/components/mdx/MDXComponets";
 import { getImage } from "astro:assets";
 
 export const getStaticPaths = async () => {
-  const generalPosts = await getCollection("generalPost");
+  const generalPosts = await getCollection("generalPost", ({ data }) => {
+    return import.meta.env.PROD ? data.draft !== true : true;
+  });
   return generalPosts.map((post) => ({
     params: { id: post.id },
     props: { post },
@@ -30,7 +32,7 @@ if (post.data.thumbnail) {
 }
 ---
 
-<BaseLayout
+<MainLayout
   title={post.data.title}
   description={post.data.excerpt}
   openGraph={{
@@ -90,4 +92,4 @@ if (post.data.thumbnail) {
       <Content components={MDXComponents} />
     </div>
   </article>
-</BaseLayout>
+</MainLayout>

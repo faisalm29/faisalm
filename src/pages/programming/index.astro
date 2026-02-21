@@ -1,17 +1,19 @@
 ---
-import BaseLayout from "@/layouts/BaseLayout.astro";
+import MainLayout from "@/layouts/MainLayout.astro";
 import ProgrammingPostsSection from "@/components/sections/ProgrammingPostsSection.astro";
 import { getCollection } from "astro:content";
 import { sortPosts } from "@/lib/utils";
 
 const sortedProgrammingPosts = sortPosts(
-  await getCollection("programmingPost"),
+  await getCollection("programmingPost", ({ data }) => {
+    return import.meta.env.PROD ? data.draft !== true : true;
+  }),
 );
 ---
 
-<BaseLayout
+<MainLayout
   title="Programming Writings"
   description="Writings specifically about programming."
 >
   <ProgrammingPostsSection programmingPosts={sortedProgrammingPosts} />
-</BaseLayout>
+</MainLayout>

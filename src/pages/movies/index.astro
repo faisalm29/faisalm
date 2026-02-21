@@ -1,19 +1,21 @@
 ---
-import BaseLayout from "@/layouts/BaseLayout.astro";
+import MainLayout from "@/layouts/MainLayout.astro";
 import MovieReviewsSection from "@/components/sections/MovieReviewsSection.astro";
 import { getCollection } from "astro:content";
 import { getMovies } from "@/lib/tmdb";
 import { sortMovies } from "@/lib/utils";
 
-const movieTmdbIds = (await getCollection("movieReviewPost")).map(
-  (movie) => movie.data.tmdbId,
-);
+const movieTmdbIds = (
+  await getCollection("movieReviewPost", ({ data }) => {
+    return import.meta.env.PROD ? data.draft !== true : true;
+  })
+).map((movie) => movie.data.tmdbId);
 const movies = sortMovies(await getMovies(movieTmdbIds));
 ---
 
-<BaseLayout
+<MainLayout
   title="Movie Reviews"
   description="My take on the movies I've watched recently."
 >
   <MovieReviewsSection movies={movies} />
-</BaseLayout>
+</MainLayout>

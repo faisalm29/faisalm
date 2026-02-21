@@ -1,5 +1,5 @@
 ---
-import BaseLayout from "@/layouts/BaseLayout.astro";
+import MainLayout from "@/layouts/MainLayout.astro";
 import { getCollection, render } from "astro:content";
 import { getMovieById } from "@/lib/tmdb";
 import { Image } from "astro:assets";
@@ -9,7 +9,12 @@ import { MDXComponents } from "@/components/mdx/MDXComponets";
 import { getImage } from "astro:assets";
 
 export const getStaticPaths = async () => {
-  const movieReviewPosts = await getCollection("movieReviewPost");
+  const movieReviewPosts = await getCollection(
+    "movieReviewPost",
+    ({ data }) => {
+      return import.meta.env.PROD ? data.draft !== true : true;
+    },
+  );
   return movieReviewPosts.map((post) => ({
     params: { id: post.id },
     props: { tmdbId: post.data.tmdbId },
@@ -42,7 +47,7 @@ const optimizedOgImage = await getImage({
 const ogImageURL = new URL(optimizedOgImage.src, Astro.url.origin).href;
 ---
 
-<BaseLayout
+<MainLayout
   title={`${movie_details.title} Movie Review`}
   description={movie_details.overview}
   openGraph={{
@@ -133,4 +138,4 @@ const ogImageURL = new URL(optimizedOgImage.src, Astro.url.origin).href;
       <Content components={MDXComponents} />
     </div>
   </article>
-</BaseLayout>
+</MainLayout>
