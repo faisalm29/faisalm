@@ -1,12 +1,12 @@
 ---
-import { getTopTracks } from "@/lib/spotify";
+// import { getTopTracks } from "@/lib/spotify";
 import MainLayout from "@/layouts/MainLayout.astro";
 import ProfileSection from "@/components/sections/ProfileSection.astro";
 import ContactsSection from "@/components/sections/ContactsSection.astro";
-import TopTracksSection from "@/components/sections/TopTracksSection.astro";
+// import TopTracksSection from "@/components/sections/TopTracksSection.astro";
 import BlogStacksSection from "@/components/sections/BlogStacksSection.astro";
 
-const topTracks = await getTopTracks();
+// const topTracks = await getTopTracks();
 ---
 
 <MainLayout
@@ -21,6 +21,6 @@ const topTracks = await getTopTracks();
   </div>
   <ProfileSection />
   <ContactsSection />
-  <TopTracksSection topTracks={topTracks} />
+  <!-- <TopTracksSection topTracks={topTracks} /> -->
   <BlogStacksSection />
 </MainLayout>

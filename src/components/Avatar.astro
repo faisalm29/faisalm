@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -9,7 +8,12 @@ interface Props {
   class?: string;
 }
 
-const { src, alt = "", fallback, class: className } = Astro.props;
+const {
+  src = "https://github.com/faisalm29.png",
+  alt,
+  fallback,
+  class: className,
+} = Astro.props;
 ---
 
 <div

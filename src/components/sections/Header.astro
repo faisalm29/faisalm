@@ -2,22 +2,25 @@
 import type { HTMLAttributes } from "astro/types";
 import Avatar from "@/components/Avatar.astro";
 import { cn } from "@/lib/utils";
+import { getImage } from "astro:assets";
+import avatar from "../../../public/avatar.png";
 
 interface Props extends HTMLAttributes<"header"> {}
+
+const avatarImage = await getImage({
+  src: avatar,
+  format: "jpeg",
+});
+const avatarURL = new URL(avatarImage.src, Astro.url.origin).href;
 
 const { class: className, ...props } = Astro.props;
 ---
 
 <header {...props} class={cn("flex items-center gap-4", className)}>
-  <Avatar
-    src="https://github.com/faisalm29.png"
-    alt="@faisalm29"
-    fallback="FM"
-    class="size-14"
-  />
+  <Avatar alt="@faisalm29" fallback="FM" class="size-14" />
 
   <div>
     <p class="font-medium">Faisal M.</p>
-    <p class="text-muted-foreground">Long-lived Learner</p>
+    <p class="text-muted-foreground">Insignificant Other</p>
   </div>
 </header>
